@@ -1,3 +1,5 @@
+package theFirstPackage;
+
 @FunctionalInterface
 interface Foo
 {
@@ -49,7 +51,7 @@ public class LambdaExpressDemo02
         };
         foo.sayHello();*/
 
-        Foo foo = (int x,int y) -> {
+        Foo foo = (int x, int y) -> {
             System.out.println("come in add method");
             return x + y;
         };
