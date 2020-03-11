@@ -9,8 +9,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
- * @auther zzyy
- * @create 2019-03-24 21:43
  *
  * 1 故障现象
  *  java.util.ConcurrentModificationException
