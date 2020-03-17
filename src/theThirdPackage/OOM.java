@@ -24,6 +24,7 @@ public class OOM {
         //输出运行过程 堆最大和初始分配大小
         System.out.println(Runtime.getRuntime().maxMemory()/1024/1024+"Mb");
         System.out.println(Runtime.getRuntime().totalMemory()/1024/1024+"Mb");
+        //vm option   -Xmx4m -Xms4m -XX:+PrintGCDetails
         byte[] bytes = new byte[4 * 1024 * 1024];
         String str = "hcx";
         while(true){
