@@ -18,5 +18,12 @@ public class theThirdPackage {
         Integer d = new Integer(1);
         System.out.println(a==b);
         System.out.println(c == d);
+
+        //byte的取值范围为-128~127，如果在这个取值范围内，自动装箱就不会创建新的对象，而是从常量池中获取，超过了byte取值范围就会再创建
+        //新对象，创建的新对象在堆中，而常量池在栈中，地址不同，所以不同
+        Integer a1 = 197;
+        Integer a2 = 197;
+        System.out.println(a1 == a2);
+
     }
 }
