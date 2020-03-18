@@ -13,6 +13,9 @@ import java.util.Random;
  * @Version 1.0
  **/
 public class OOM {
+
+    private  byte[] bigSize = new byte[1*1024*1024];
+    Object instance = null;
     public static void main(String[] args) {
         System.out.println(Runtime.getRuntime().availableProcessors());
 //        String str = "hcx";
@@ -30,5 +33,20 @@ public class OOM {
         while(true){
             str += new Random().nextInt(888888888)+new Random().nextInt(999999999);
         }
+
+        /**
+        * 引用计数法：每次对对象赋值时均要维护引用计数器，jvm的实现一般不采用这种方法
+        * @param args
+        * @return void
+        * @exception
+        **/
+        /*OOM objectB = new OOM();
+        OOM objectA = new OOM();
+        objectA.instance = objectB;
+        objectB.instance = objectA;
+        objectA = null;
+        objectB = null;
+
+        System.gc();*/
     }
 }
