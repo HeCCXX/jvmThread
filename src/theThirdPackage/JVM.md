@@ -147,6 +147,74 @@ synchronized 是排它锁，同时只能有一个线程访问对应方法，其�
 
 <font color =red>如果写入变量值不依赖变量当前值，那么就可以使用volatile</font>
 
+```java
+class Data{
+    volatile int number = 10;
+}
+public class VolatileDemo {
+    public static void main(String[] args) {
+        Data data = new Data();
+        new Thread(() -> {
+            try {
+                 Thread.sleep(3000);
+                 data.number = 100;
+                System.out.println(Thread.currentThread().getName()+data.number);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        },"A").start();
+
+        System.out.println(data.number);
+        while (data.number == 10){
+
+        }
+        System.out.println("break while");
+    }
+}
+```
+
+如上述代码，如果不加volatile关键字，则while循环为死循环，无法输出最后一行，程序将一直处于运行状态。而加了volatile关键字后,将数显number的内存可见性，循环判断条件即可跳出。
+
+```java
+public class VolatiteDemo2 {
+    static volatile int num = 0;
+
+    public static void main(String[] args) {
+        VolatiteDemo2 volatiteDemo2 = new VolatiteDemo2();
+
+        Thread a = new Thread(() -> {
+            int start = 0;
+            while (start++ < 100000) {
+                num++;
+                //加了输出语句会较少出现不正确例子
+//                System.out.println(Thread.currentThread().getName() + ":" + num);
+            }
+        }, "A");
+
+        Thread b = new Thread(() -> {
+            int start = 0;
+            while (start++ < 100000) {
+                num++;
+//                System.out.println(Thread.currentThread().getName() + ":" + num);
+            }
+        }, "B");
+
+        a.start();
+        b.start();
+
+        try {
+            a.join();
+            b.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Number:"+ num);
+    }
+}
+```
+
+上述代码中，当进行volatile++这样的复合操作时，不能保证原子性，因为cpu执行执行volatile++是三行操作，volatile关键字不是阻塞算法，不保证其他线程不操作，从而导致结果出现错误。（输出的num值在100000~20000之间变化）
+
 ## 布隆过滤器
 
 利用平衡术或者Trie或者AC自动机等数据结构和算法可以实现高效的查找，但是都需要存储所有的字符串。此时可以利用布隆过滤器。
