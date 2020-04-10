@@ -68,13 +68,19 @@ public class ConditionLoop05 {
         ShareData shareData = new ShareData();
         shareData.setGlobalFlag(1);
         new Thread(()->{
-            shareData.print(1,shareData.c1,5,shareData.c2,2);
+            for (int i = 0;i < 10; i++) {
+                shareData.print(1,shareData.c1,5,shareData.c2,2);
+            }
         },"A").start();
         new Thread(()->{
-            shareData.print(2,shareData.c2,10,shareData.c3,3);
+            for (int i = 0;i < 10; i++) {
+                shareData.print(2,shareData.c2,10,shareData.c3,3);
+            }
         },"B").start();
         new Thread(()->{
-            shareData.print(3,shareData.c3,15,shareData.c1,1);
+            for (int i = 0;i < 10; i++) {
+                shareData.print(3,shareData.c3,15,shareData.c1,1);
+            }
         },"C").start();
 
 
