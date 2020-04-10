@@ -23,27 +23,37 @@ class ShareData{
     public Condition c1 = lock.newCondition();
     public  Condition c2 = lock.newCondition();
     public Condition c3 = lock.newCondition();
+    private int globalFlag;
+
+    public int getGlobalFlag() {
+        return globalFlag;
+    }
+
+    public void setGlobalFlag(int globalFlag) {
+        this.globalFlag = globalFlag;
+    }
 
     /**
     * 根据传参进入的标志位和游标判断，进行下一个线程的进行
-    * @param flag
-    * @param cusor
+    * @param flag    标志位
     * @param condition
-    * @param loopNum
+    * @param loopNum  循环次数
     * @param nextCondition
+    * @param next  指向下一个进程
     * @return void
     * @exception
     **/
-    public void print(int flag,int cusor,Condition condition,int loopNum,Condition nextCondition){
+    public void print(int flag,Condition condition,int loopNum,Condition nextCondition,int next){
         lock.lock();
         try
         {
-                while (flag != cusor){
+                while (flag != globalFlag){
                     condition.await();
                 }
                 for (int k = 1; k <= loopNum; k++) {
                     System.out.println(Thread.currentThread().getName()+":"+k);
                 }
+                globalFlag = next;
                 nextCondition.signal();
         }catch (Exception e){
               e.printStackTrace();
@@ -56,15 +66,15 @@ class ShareData{
 public class ConditionLoop05 {
     public static void main(String[] args) {
         ShareData shareData = new ShareData();
-
+        shareData.setGlobalFlag(1);
         new Thread(()->{
-            shareData.print(1,1,shareData.c1,5,shareData.c2);
+            shareData.print(1,shareData.c1,5,shareData.c2,2);
         },"A").start();
         new Thread(()->{
-            shareData.print(2,2,shareData.c2,10,shareData.c3);
+            shareData.print(2,shareData.c2,10,shareData.c3,3);
         },"B").start();
         new Thread(()->{
-            shareData.print(3,3,shareData.c3,15,shareData.c1);
+            shareData.print(3,shareData.c3,15,shareData.c1,1);
         },"C").start();
 
 
