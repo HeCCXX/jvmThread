@@ -5,6 +5,7 @@ import java.util.concurrent.*;
 /**
  * @ClassName ExecutorsTest
  * @Description 利用Executors创建线程,但是不推荐使用该类创建线程池，因为该类创建的线程池会导致资源浪费
+ * callable  有返回值，  Runnable没有返回值
  * @Author 贺楚翔
  * @Date 2020-04-14 14:41
  * @Version 1.0
