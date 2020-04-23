@@ -45,10 +45,10 @@ public class ThreadPrint2 {
         while (true) {
             lock.lock();
             try {
-                while (flag != checkNum(array[arrayIndex]) && arrayIndex < array.length-1){
+                while (arrayIndex <= array.length-1 && flag != checkNum(array[arrayIndex])){
                     condition.await();
                 }
-                if (arrayIndex < array.length-1){
+                if (arrayIndex <= array.length-1){
                     printFunction.print(array[arrayIndex]);
                 }else{
                     return;
