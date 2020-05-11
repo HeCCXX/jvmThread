@@ -83,15 +83,38 @@ public class BubbleSort {
     }
 
     /**
-    * 鸡尾酒排序，冒泡排序的另一种优化
+    * 鸡尾酒排序，冒泡排序的另一种优化,i控制轮训次数，j控制遍历方向
     * @param array
     * @return void
     * @exception       
     **/
     public static void bubbleSortBetter3(int[] array){
-        for (int i = 0; i < array.length - 1; i++) {
-            for (int j = 0; j < ; j++) {
-                
+
+        for (int i = 0; i < array.length/2; i++) {
+            int tmp = 0;
+            boolean flag = true;
+            for (int j = i; j < array.length-i-1; j++) {
+                if (array[j] > array[j+1]){
+                    tmp = array[j];
+                    array[j] = array[j+1];
+                    array[j+1] = tmp;
+                    flag = false;
+                }
+            }
+            if (flag){
+                break;
+            }
+            flag = true;
+            for (int j = array.length-i-1; j > i ; j--) {
+                    if (array[j-1] > array[j]){
+                        tmp = array[j];
+                        array[j] = array[j-1];
+                        array[j-1] = tmp;
+                        flag = false;
+                    }
+            }
+            if (flag){
+                break;
             }
         }
     }
@@ -101,7 +124,8 @@ public class BubbleSort {
         int[] array2 = {2,3,4,5,6,7,1,8};
 //        bubbleSort(array);
 //        bubbleSortBetter(array);
-        bubbleSortBetter2(array);
-        System.out.println(Arrays.toString(array));
+//        bubbleSortBetter2(array);
+        bubbleSortBetter3(array2);
+        System.out.println(Arrays.toString(array2));
     }
 }
