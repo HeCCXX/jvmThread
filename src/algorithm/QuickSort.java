@@ -2,6 +2,9 @@ package algorithm;
 
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
 
 /**
  * @ClassName QuickSort
@@ -19,6 +22,40 @@ public class QuickSort {
         int pivot = partition2(array,startIndex,endIndex);
         quickSort1(array,startIndex,pivot-1);
         quickSort1(array,pivot+1,endIndex);
+    }
+
+    /**
+    * 利用栈替换递归的方式
+    * @param array
+    * @param startIndex
+    * @param endIndex
+    * @return void
+    * @exception
+    **/
+    public static void quickSortByStack(int[] array,int startIndex,int endIndex){
+        Stack<Map<String, Integer>> stack = new Stack<>();
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put("startIndex",startIndex);
+        map.put("endIndex",endIndex);
+        stack.push(map);
+
+        while (!stack.isEmpty()){
+            Map<String, Integer> pop = stack.pop();
+            int partition = partition(array, pop.get("startIndex"), pop.get("endIndex"));
+
+            if (partition - 1 > pop.get("startIndex")){
+                HashMap<String, Integer> map1 = new HashMap<>();
+                map1.put("startIndex",startIndex);
+                map1.put("endIndex",partition-1);
+                stack.push(map1);
+            }
+            if (pop.get("endIndex")>partition+1){
+                HashMap<String, Integer> map1 = new HashMap<>();
+                map1.put("startIndex",partition+1);
+                map1.put("endIndex",endIndex);
+                stack.push(map1);
+            }
+        }
     }
 
     /**
@@ -79,7 +116,8 @@ public class QuickSort {
 
     public static void main(String[] args) {
         int[] array = {8,3,1,6,5,2,10,7};
-        quickSort1(array,0,array.length-1);
+//        quickSort1(array,0,array.length-1);
+        quickSortByStack(array,0,array.length-1);
         System.out.println(Arrays.toString(array));
     }
 }
