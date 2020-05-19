@@ -12,12 +12,15 @@ import java.util.Arrays;
 public class NearestNumTest {
 
     public static int[] getNearestNumber(int[] array){
+        //获取逆序区域的第一个索引
         int index = getNumChange(array);
         if (index == 0){
             return null;
         }
         int[] arraycopy = Arrays.copyOf(array, array.length);
+        //交换逆序区域的第一个索引和逆序区域中最小且大于前一个数字，由于后面是逆序，所以存在交换的话，只用交换最后一个
         exchangeNum(arraycopy,index);
+        //将逆序区域变为顺序，将数变小，因为是逆序，所以首尾交换即可
         reverse(arraycopy,index);
         return arraycopy;
     }
