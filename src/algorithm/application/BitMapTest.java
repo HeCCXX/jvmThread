@@ -1,4 +1,4 @@
-package algorithm.practice;
+package algorithm.application;
 
 /**
  * @ClassName BitMapTest
