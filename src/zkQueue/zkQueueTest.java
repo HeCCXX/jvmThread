@@ -13,6 +13,15 @@ import org.apache.curator.utils.CloseableUtils;
  * @ClassName zkQueueTest
  * @Description zk  队列实例，包含普通DistributedQueue和 idDistributedQueue
  * idDistributedQueue可以根据id进行删除元素，而普通DistributedQueue没有删除
+ * maven需要导入依赖包
+ * <groupId>org.apache.curator</groupId>
+ * <artifactId>curator-recipes</artifactId>
+ *
+ * <groupId>org.apache.curator</groupId>
+ * <artifactId>curator-framework</artifactId>
+ *
+ * <groupId>org.apache.curator</groupId>
+ * <artifactId>curator-client</artifactId>
  * @Author 贺楚翔
  * @Date 2020-05-27 10:04
  * @Version 1.0
