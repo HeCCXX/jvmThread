@@ -15,9 +15,11 @@ import java.nio.charset.StandardCharsets;
  **/
 public class BIOTest {
     public void server(int port) throws IOException {
+        //开启socket服务器，并监听端口
         final ServerSocket socket = new ServerSocket(port);
 
         for (;;){
+            //轮询接收监听
             final Socket accept = socket.accept();
             try {
                 Thread.sleep(100);
@@ -25,6 +27,7 @@ public class BIOTest {
                 e.printStackTrace();
             }
             System.out.println("accept connect from " + accept);
+            //创建新线程
             new Thread(()->{
                 OutputStream out;
                 try {
