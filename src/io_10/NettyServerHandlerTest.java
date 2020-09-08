@@ -1,0 +1,112 @@
+package io_10;
+
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.*;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+
+import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
+
+import static java.nio.charset.StandardCharsets.*;
+
+/**
+ * @ClassName NettyServerHandlerTest
+ * @Description Netty Handler测试  下列程序例子介绍Handler接收和发送消息的顺序（双向链表），接收是从表头开始遍历，发送是从表尾开始遍历
+ * @Author 贺楚翔
+ * @Date 2020-09-08 14:18
+ * @Version 1.0
+ **/
+public class NettyServerHandlerTest {
+    final static ByteBuf buffer = Unpooled.unreleasableBuffer(Unpooled.copiedBuffer("Hi\r\n", UTF_8));
+
+    public void serve(int port) throws InterruptedException {
+        final NioEventLoopGroup bossGroup = new NioEventLoopGroup(1);
+        final NioEventLoopGroup workGroup = new NioEventLoopGroup();
+
+        try {
+            final ServerBootstrap serverBootstrap = new ServerBootstrap();
+            serverBootstrap.group(bossGroup,workGroup)
+                    .channel(NioServerSocketChannel.class)
+                    .localAddress(new InetSocketAddress(port))
+                    .childHandler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        protected void initChannel(SocketChannel ch) throws Exception {
+                            final ChannelPipeline pipeline = ch.pipeline();
+                            pipeline.addLast("1",new InboundA());
+                            pipeline.addLast("2",new OutboundA());
+                            pipeline.addLast("3",new InboundB());
+                            pipeline.addLast("4",new OutboundB());
+                            pipeline.addLast("5",new OutboundC());
+                            pipeline.addLast("6",new InboundC());
+
+                        }
+                    });
+            final ChannelFuture future = serverBootstrap.bind().sync();
+            future.channel().closeFuture().sync();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            bossGroup.shutdownGracefully().sync();
+            workGroup.shutdownGracefully().sync();
+        }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        final NettyServerHandlerTest nettyServerHandlerTest = new NettyServerHandlerTest();
+        nettyServerHandlerTest.serve(5555);
+    }
+
+    class InboundA extends ChannelInboundHandlerAdapter{
+        @Override
+        public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+            ByteBuf buf = (ByteBuf) msg;
+            System.out.println("InboundA read:" + buf.toString(Charset.forName("UTF-8")));
+            super.channelRead(ctx, msg);
+        }
+    }
+    class InboundB extends ChannelInboundHandlerAdapter{
+        @Override
+        public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+            ByteBuf buf = (ByteBuf) msg;
+            System.out.println("InboundB read:" + buf.toString(Charset.forName("UTF-8")));
+            super.channelRead(ctx, msg);
+            ctx.channel().writeAndFlush(buffer);
+        }
+    }
+    class InboundC extends ChannelInboundHandlerAdapter{
+        @Override
+        public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+            ByteBuf buf = (ByteBuf) msg;
+            System.out.println("InboundC read:" + buf.toString(Charset.forName("UTF-8")));
+            super.channelRead(ctx, msg);
+        }
+    }
+
+    class OutboundA extends ChannelOutboundHandlerAdapter{
+        @Override
+        public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
+            System.out.println("OutboundA write");
+            super.write(ctx, msg, promise);
+        }
+    }
+
+    class OutboundB extends ChannelOutboundHandlerAdapter{
+        @Override
+        public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
+            System.out.println("OutboundB write");
+            super.write(ctx, msg, promise);
+        }
+    }
+
+    class OutboundC extends ChannelOutboundHandlerAdapter{
+        @Override
+        public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
+            System.out.println("OutboundC write");
+            super.write(ctx, msg, promise);
+        }
+    }
+}
