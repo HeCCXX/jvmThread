@@ -24,17 +24,21 @@ public class NettyServerHandlerTest {
     final static ByteBuf buffer = Unpooled.unreleasableBuffer(Unpooled.copiedBuffer("Hi\r\n", UTF_8));
 
     public void serve(int port) throws InterruptedException {
+        //建立线程池
         final NioEventLoopGroup bossGroup = new NioEventLoopGroup(1);
         final NioEventLoopGroup workGroup = new NioEventLoopGroup();
 
         try {
+            //创建服务端启动引导类
             final ServerBootstrap serverBootstrap = new ServerBootstrap();
+            //注册组件
             serverBootstrap.group(bossGroup,workGroup)
                     .channel(NioServerSocketChannel.class)
                     .localAddress(new InetSocketAddress(port))
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
+                            //添加拦截处理器，用于拦截和处理入站、出站操作
                             final ChannelPipeline pipeline = ch.pipeline();
                             pipeline.addLast("1",new InboundA());
                             pipeline.addLast("2",new OutboundA());
@@ -42,9 +46,9 @@ public class NettyServerHandlerTest {
                             pipeline.addLast("4",new OutboundB());
                             pipeline.addLast("5",new OutboundC());
                             pipeline.addLast("6",new InboundC());
-
                         }
                     });
+            //异步回调
             final ChannelFuture future = serverBootstrap.bind().sync();
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {
@@ -60,6 +64,15 @@ public class NettyServerHandlerTest {
         nettyServerHandlerTest.serve(5555);
     }
 
+    /**
+    * @Author HCX
+    * @Description //以下是三个inbound和三个outbound，在pipeline中分别注册调用，得知
+     * 接收和发送消息的顺序，在双向链表中是如何调用的
+    * @Date 9:21 2020-09-09
+    * @param null
+    * @return
+    * @exception
+    **/
     class InboundA extends ChannelInboundHandlerAdapter{
         @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
